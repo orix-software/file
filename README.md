@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/oric-software/file.svg?branch=master)](https://travis-ci.org/oric-software/file)
+[![Build Status](https://travis-ci.org/orix-software/file.svg?branch=master)](https://travis-ci.org/oric-software/file)
 
 File tool for Orix : http://orix.oric.org
 
