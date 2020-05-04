@@ -1,0 +1,7 @@
+#! /bin/sh
+VERSION=1.0.4
+echo "#define VERSION \"$VERSION\"" > src/version.h
+echo "file      1.0.4  Display file information" > src/ipkg/file.csv
+
+
+
