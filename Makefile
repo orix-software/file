@@ -6,7 +6,7 @@ SOURCE=src/file.c
 ASFLAGS=-C -W -e error.txt -l xa_labels.txt -DTARGET_ORIX
 
 ifdef TRAVIS_BRANCH
-ifeq ($(TRAVIS_BRANCH), master)
+ifeq ($(TRAVIS_BRANCH), main)
 RELEASE:=$(shell cat VERSION)
 else
 RELEASE=alpha
