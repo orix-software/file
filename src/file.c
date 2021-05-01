@@ -121,8 +121,7 @@ NOTES IMPORTANTES :  Les octets des mots sont stockés sous la forme  (c.-à-d.,
 
 
 
-void vhi_file()
-{
+void vhi_file() {
   printf("VHI file\n");
   printf("Format : ");
   if (chars[3]==0)
@@ -140,8 +139,7 @@ void vhi_file()
 
 
 
-void orix_file()
-{
+void orix_file() {
   if (chars[2]=='o' && chars[3]=='r' && chars[4]=='i')   {
     printf("Orix File\n");
     printf("CPU Type : ");
@@ -154,27 +152,27 @@ void orix_file()
     else {
       printf("Unknown CPU type\n.Orix won't start this binary\n");
       return;
-    }
-    if (chars[7]==SEDORIC_FILE) {
-      printf("Sedoric File (encapsulated in Orix header)\n");
-      if (chars[13]==1)
-        printf("- Machine code\n");
-    }
-    if (chars[7]==STRATSED_FILE)
-      printf("Stratsed File (encapsulated in Orix header)\n");
-    if (chars[7]==FTDOS_FILE)
-      printf("FTDOS File (encapsulated in Orix header)\n");
-  
+  }
+  // Version 1
+  if (chars[5]==1) {
     printf("Loading adress : $%02hhX%02hhX\n",chars[15],chars[14]);
     printf("End of loading adress : $%02hhX%02hhX\n",chars[17],chars[16]);
     printf("Starting adress : $%02hhX%02hhX\n",chars[19],chars[18]);
     printf("Size : %u bytes\n",(chars[16]+chars[17]*256)-(chars[14]+chars[15]*256));
     return;
   }
-  else
-    raw_file();
-
+  
+  if (chars[5]==2) {
+    printf("Format version 2 : reloc binary\n");
+    printf("Map size : $%02hhX%02hhX\n",chars[19],chars[18]);
+    return;
+  }
+  
+  printf("Unknown format");
   return;
+  }
+ printf("Unknown format");
+return;
 }
 
 void usage()
