@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <conio.h>
 #include <string.h>
 #include <peekpoke.h>
 #include "version.h"
@@ -152,31 +153,30 @@ void orix_file() {
     else {
       printf("Unknown CPU type\n.Orix won't start this binary\n");
       return;
-  }
+    }
   // Version 1
-  if (chars[5]==1) {
-    printf("Loading adress : $%02hhX%02hhX\n",chars[15],chars[14]);
-    printf("End of loading adress : $%02hhX%02hhX\n",chars[17],chars[16]);
-    printf("Starting adress : $%02hhX%02hhX\n",chars[19],chars[18]);
-    printf("Size : %u bytes\n",(chars[16]+chars[17]*256)-(chars[14]+chars[15]*256));
+    if (chars[5]==1) {
+      printf("Loading adress : $%02hhX%02hhX\n",chars[15],chars[14]);
+      printf("End of loading adress : $%02hhX%02hhX\n",chars[17],chars[16]);
+      printf("Starting adress : $%02hhX%02hhX\n",chars[19],chars[18]);
+      printf("Size : %u bytes\n",(chars[16]+chars[17]*256)-(chars[14]+chars[15]*256));
+      return;
+    }
+    
+    if (chars[5]==2) {
+      printf("Format version 2 : reloc binary\n");
+      printf("Map size : $%02hhX%02hhX\n",chars[19],chars[18]);
+      return;
+    }
+    
+    printf("Unknown format");
     return;
-  }
-  
-  if (chars[5]==2) {
-    printf("Format version 2 : reloc binary\n");
-    printf("Map size : $%02hhX%02hhX\n",chars[19],chars[18]);
-    return;
-  }
-  
-  printf("Unknown format");
-  return;
   }
  printf("Unknown format");
 return;
 }
 
-void usage()
-{
+void usage() {
   printf("usage:\n");
   printf("file FILENAME\n");
   printf("file -v|--version : displays version\n");
@@ -188,24 +188,19 @@ int main(int argc,char *argv[])
 {
   FILE *fp;
   int nb;
-  unsigned char val;
 
-
-  if (argc==2 && (strcmp(argv[1],"--version")==0 || strcmp(argv[1],"-v")==0))
-  {
+  if (argc==2 && (strcmp(argv[1],"--version")==0 || strcmp(argv[1],"-v")==0))  {
 
     version();
     return 0;
   }
  
-  if (argc==2 && (strcmp(argv[1],"--help")==0 || strcmp(argv[1],"-h")==0))
-  {
+  if (argc==2 && (strcmp(argv[1],"--help")==0 || strcmp(argv[1],"-h")==0))  {
     usage();
     return 0;
   } 
  
-  if (argc!=2)
-  {
+  if (argc!=2)  {
     usage();
     return(1);
   }
@@ -216,23 +211,18 @@ int main(int argc,char *argv[])
     printf("%c",val);
   }
   */
+
   fp=fopen(argv[1],"r");
-  if (fp==NULL)
-  {
+  if (fp==NULL)  {
     printf("Can't open %s\n",argv[1]);
-    /*
-    for (nb=0;nb<10;nb++)
-    {
-      val=PEEK(0x0590+nb);
-      printf("%c",val);
-    } */   
     return (1);
   }   
-        
+
+
+
   nb=fread(chars,SIZE_HEADER_TO_READ,1,fp);
 
-  switch (chars[0])
-  {
+  switch (chars[0]) {
     case '#':
     if (chars[1]=='!')
       script_file();
@@ -247,8 +237,7 @@ int main(int argc,char *argv[])
       break;
         
     case 1:
-      if (chars[1]==0)
-      {
+      if (chars[1]==0) {
         orix_file();
       }
       break;
