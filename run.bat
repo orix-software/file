@@ -2,7 +2,7 @@
 
 SET BINARYFILE=file
 SET PATH_RELEASE=build\usr\share\%BINARYFILE%\
-SET ORICUTRON="..\..\..\oricutron-iss2-debug\"
+SET ORICUTRON="D:\Users\plifp\Onedrive\oric\oricutron_twilighte"
 set VERSION=1.0.2
 SET ORIGIN_PATH=%CD%
 echo %osdk%
