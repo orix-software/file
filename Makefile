@@ -20,7 +20,7 @@ endif
 
 
 $(PROGRAM): $(SOURCE)
-	mkdir build
+	mkdir build/bin -p
 	$(CC) -o build/bin/file $(CFLAGS) $(LDFILES) $(SOURCE)
 	#$(CC) -o 800 $(CFLAGS) $(LDFILES) $(SOURCE)
 	#$(CC) -o 900 $(CFLAGS) --config deps/orix-sdk/cfg/telestrat_900.cfg $(LDFILES) $(SOURCE)
