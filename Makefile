@@ -22,7 +22,6 @@ endif
 $(PROGRAM): $(SOURCE)
 	mkdir build/bin -p
 	mkdir build/usr/share/man -p
-	$(CC) -o build/bin/file $(CFLAGS) $(LDFILES) $(SOURCE)
 	$(CC) -o 1000 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr 1000
 	$(CC) -o 1256 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr 1256
 	# Reloc
