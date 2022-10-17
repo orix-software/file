@@ -25,6 +25,7 @@ $(PROGRAM): $(SOURCE)
 	$(CC) -o 1000 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr 1000
 	$(CC) -o 1256 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr 1256
 	# Reloc
+	chmod +x deps/orix-sdk/bin/relocbin.py3
 	deps/orix-sdk/bin/relocbin.py3 -o build/bin/file -2 1000 1256
 	cd docs && md2hlp.py3 --file file.md --output ../build/usr/share/man/file.hlp && cd ..
 
