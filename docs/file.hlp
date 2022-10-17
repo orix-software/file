@@ -1,3 +1,3 @@
-                                                                                 
-  ORIX    1.0    Command: file       
-  ORIX    1.0    Command: file                                                      Display file info                                                    Syntax :  #file myfile                                                         Detect if it's an orix file, or a raw file. If it's an orix file, it displays some information.                                                                 Examples: file /bin/touch                                                      Src code : https://github.com/oric-software/file.git
+  
+  Shell   2022.2    Command: file    
+  Shell   2022.2    Command: file                                          test file type                                                                 SYNOPSYS                                       file myfile                                                            EXAMPLES                                       file music.wav                         Detects file : orix, wav, gz,    lz77, tape, vhi                                                                SOURCE                                     Src code : https://github.com/orix-software/file.git (Assembly and C)     
