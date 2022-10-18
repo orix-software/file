@@ -27,5 +27,5 @@ $(PROGRAM): $(SOURCE)
 	# Reloc
 	chmod +x deps/orix-sdk/bin/relocbin.py3
 	deps/orix-sdk/bin/relocbin.py3 -o build/bin/file -2 1000 1256
-	cd docs && md2hlp.py3 --file file.md --output ../build/usr/share/man/file.hlp && cd ..
+	cd docs && ../md2hlp/src/md2hlp.py3 --file file.md --output ../build/usr/share/man/file.hlp && cd ..
 
