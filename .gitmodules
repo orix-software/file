@@ -1,3 +1,9 @@
 [submodule "deps/orix-sdk"]
 	path = deps/orix-sdk
-	url = https://github.com/assinie/orix-sdk.git
+	url = https://github.com/assinie/orix-sdk
+[submodule "orix-sdk"]
+	path = orix-sdk
+	url = https://github.com/assinie/orix-sdk
+[submodule "deps/deps"]
+	path = deps/deps
+	url = https://github.com/assinie/orix-sdk

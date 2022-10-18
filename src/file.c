@@ -138,18 +138,16 @@ void vhi_file() {
 #define STRATSED_FILE 2
 #define FTDOS_FILE    3
 
-
-
 void orix_file() {
   if (chars[2]=='o' && chars[3]=='r' && chars[4]=='i')   {
-    printf("Orix File\n");
+    printf("Orix file binary\n");
     printf("CPU Type : ");
     if (chars[6]==0)
       printf("6502\n");
     else if  (chars[6]==1)
       printf("65C02\n");
     else if  (chars[6]==2)
-      printf("65C816\n");    
+      printf("65C816\n");
     else {
       printf("Unknown CPU type\n.Orix won't start this binary\n");
       return;
@@ -162,18 +160,22 @@ void orix_file() {
       printf("Size : %u bytes\n",(chars[16]+chars[17]*256)-(chars[14]+chars[15]*256));
       return;
     }
-    
+
     if (chars[5]==2) {
       printf("Format version 2 : reloc binary\n");
-      printf("Map size : $%02hhX%02hhX\n",chars[19],chars[18]);
+      printf("Map size : $%02hhX%02hhX\n",chars[8],chars[7]);
+      printf("Map offset : $%02hhX%02hhX\n",chars[13],chars[12]);
+      printf("Virtual loading address : $%02hhX%02hhX\n",chars[15],chars[14]);
+      printf("Virtual starting address : $%02hhX%02hhX\n",chars[19],chars[18]);
+      printf("Size : $%02hhX%02hhX\n",chars[17],chars[16]);
       return;
     }
-    
+
     printf("Unknown format");
     return;
   }
- printf("Unknown format");
-return;
+  printf("Unknown format");
+  return;
 }
 
 void usage() {
@@ -183,7 +185,7 @@ void usage() {
   printf("file -h|--help : displays help\n");
   return;
 }
-    
+
 int main(int argc,char *argv[])
 {
   FILE *fp;
@@ -194,31 +196,22 @@ int main(int argc,char *argv[])
     version();
     return 0;
   }
- 
+
   if (argc==2 && (strcmp(argv[1],"--help")==0 || strcmp(argv[1],"-h")==0))  {
     usage();
     return 0;
-  } 
- 
+  }
+
   if (argc!=2)  {
     usage();
     return(1);
   }
-/*
-  for (nb=0;nb<10;nb++)
-  {
-    val=PEEK(0x0590+nb);
-    printf("%c",val);
-  }
-  */
 
   fp=fopen(argv[1],"r");
   if (fp==NULL)  {
     printf("Can't open %s\n",argv[1]);
     return (1);
-  }   
-
-
+  }
 
   nb=fread(chars,SIZE_HEADER_TO_READ,1,fp);
 
@@ -227,15 +220,14 @@ int main(int argc,char *argv[])
     if (chars[1]=='!')
       script_file();
       break;
-    case 0x16:                
+    case 0x16:
       if (chars[1]==0x16 && chars[2]==0x16  && chars[3]==0x24)
         tap_file();
         break;
-    case 0x1f:                
+    case 0x1f:
       if (chars[1]==0x8b)
          printf("gzip format\n");
       break;
-        
     case 1:
       if (chars[1]==0) {
         orix_file();
@@ -248,16 +240,14 @@ int main(int argc,char *argv[])
     case 'R':
       if (chars[1]=='I' && chars[2]=='F' && chars[3]=='F' )
         wav_file();
-        break;     
+        break;
     case 'V':
       if (chars[1]=='H' && chars[2]=='I')
         vhi_file();
-        break;        
-        
+        break;
     default:
-      raw_file(); 
+      raw_file();
    }
-   
    fclose(fp);
 
   return 0;

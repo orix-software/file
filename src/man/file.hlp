@@ -1,3 +1,0 @@
-                                                                                 
-  ORIX    1.0    Command: file       
-  ORIX    1.0    Command: file                                                      Display file info                                                    Syntax :  #file myfile                                                         Detect if it's an orix file, or a raw file. If it's an orix file, it displays some information.                                                                 Examples: file /bin/touch                                                      Src code : https://github.com/oric-software/file.git

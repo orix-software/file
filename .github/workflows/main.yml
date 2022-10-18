@@ -1,6 +1,6 @@
 name: build
 
-# Controls when the action will run.
+# Controls when the action will run. 
 on:
   # Triggers the workflow on push event only for all branches
   push:
@@ -14,7 +14,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   setup-sdk:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Cache sdk
@@ -26,7 +26,7 @@ jobs:
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
-          key: ${{ runner.os }}-orix-sdk_
+          key: ${{ secrets.CACHE_ID }}-orix-sdk_
 
       - name: Checkout cc65
         if: steps.cache-sdk.outputs.cache-hit != 'true'
@@ -83,13 +83,15 @@ jobs:
   build:
     # The type of runner that the job will run on
     needs: setup-sdk
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.job_vars.outputs.VERSION }}
       repo_name: ${{ steps.job_vars.outputs.REPO_NAME }}
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Set job variables
         id: job_vars
@@ -105,7 +107,7 @@ jobs:
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
-          key: ${{ runner.os }}-orix-sdk_
+          key: ${{ secrets.CACHE_ID }}-orix-sdk_
 
       - name: Prepare environment for project
         run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
@@ -129,7 +131,7 @@ jobs:
 
   upload:
     needs: build
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash
