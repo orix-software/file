@@ -22,8 +22,8 @@ endif
 $(PROGRAM): $(SOURCE)
 	mkdir build/bin -p
 	mkdir build/usr/share/man -p
-	$(CC) -o 1000 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr 1000
-	$(CC) -o 1256 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr 1256
+	$(CC) -o 1000 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr \$800
+	$(CC) -o 1256 $(CFLAGS) $(LDFILES) $(SOURCE) --start-addr \$900
 	# Reloc
 	chmod +x deps/orix-sdk/bin/relocbin.py3
 	deps/orix-sdk/bin/relocbin.py3 -o build/bin/file -2 1000 1256
