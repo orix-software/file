@@ -14,4 +14,4 @@ Detects file : orix, wav, gz, lz77, tape, vhi
 
 ## SOURCE
 
-Src code : https://github.com/orix-software/file.git (Assembly and C)
+Src code : https://github.com/orix-software/file (Assembly and C)

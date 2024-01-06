@@ -13,12 +13,12 @@ void version() {
 }
 
 void script_file() {
-  printf("Script file\n");  
+  printf("Script file\n");
   return;
 }
 
 void tap_file() {
-  printf("TAP file\n"); 
+  printf("TAP file\n");
   printf("Starting adress : $%02hhX%02hhX\n",chars[10],chars[11]);
   printf("End of loading adress : $%02hhX%02hhX\n",chars[8],chars[9]);
   return;
@@ -53,8 +53,8 @@ void wav_file() {
       break;
    default :
       printf(" Unknown %d\n",temp);
-  }  
-  
+  }
+
   temp=chars[20]+chars[21]*256;
   printf(" Nbrchannel :");
   switch(temp) {
@@ -66,7 +66,7 @@ void wav_file() {
       break;
    case 3  :
       printf(" left, right et center \n");
-      break;      
+      break;
    case 4  :
       printf(" left front, right front, back left, back right \n");
       break;
@@ -75,7 +75,7 @@ void wav_file() {
       break;
    case 6  :
       printf(" left center, left, centee, right center, right, surround (ambiant) \n");
-      break;          
+      break;
    default :
       printf(" Unknown \n");
   }
@@ -84,7 +84,7 @@ void wav_file() {
   printf(" BytePerBloc : %d\n",chars[30]+chars[31]*256);
   printf(" BitsPerSample : %d\n",chars[32]+chars[33]*256);
   return;
-  
+
     /*
   [Bloc de déclaration d'un fichier au format WAVE]
    FileTypeBlocID  (4 octets) : Constante «RIFF»  (0x52,0x49,0x46,0x46)
@@ -119,8 +119,6 @@ NOTES IMPORTANTES :  Les octets des mots sont stockés sous la forme  (c.-à-d.,
 [87654321][16..9][24..17] [8..1][16..9][24..17] [...
 */
 }
-
-
 
 void vhi_file() {
   printf("VHI file\n");
