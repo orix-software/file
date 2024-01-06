@@ -1,0 +1,9 @@
+Package: file
+Version: 2024.1
+Section: base
+Priority: optional
+Architecture: 6502
+#Depends:
+Maintainer: jede <jede@oric.org>
+Description: file binary for checking file type
+Homepage: https://orix.oric.org
