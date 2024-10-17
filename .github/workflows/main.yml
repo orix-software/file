@@ -1,10 +1,10 @@
 name: build
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push event only for all branches
   push:
-    branches: [ main, master, develop ]
+  #  branches: [ main, master ]
   #pull_request:
   #  branches: [ main, master ]
 
@@ -19,32 +19,32 @@ jobs:
     steps:
       - name: Cache sdk
         id: cache-sdk
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
              cc65/**/*
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
-          key: ${{ secrets.CACHE_ID }}-orix-sdk_
+          key: ${{ runner.os }}-orix-sdk
 
       - name: Checkout cc65
         if: steps.cache-sdk.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: cc65/cc65
           path: cc65
 
       - name: Checkout orix-sdk
         if: steps.cache-sdk.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: assinie/orix-sdk
           path: orix-sdk
 
       - name: Checkout md2hlp
         if: steps.cache-sdk.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: assinie/md2hlp
           path: md2hlp
@@ -89,37 +89,35 @@ jobs:
       repo_name: ${{ steps.job_vars.outputs.REPO_NAME }}
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      - uses: actions/checkout@v3
 
       - name: Set job variables
         id: job_vars
         run: |
-          echo "::set-output name=VERSION::$(cat VERSION)"
-          echo "::set-output name=REPO_NAME::${GITHUB_REPOSITORY##*/}"
+          echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
+          echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_OUTPUT
 
       - name: Install sdk
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
              cc65/**/*
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
-          key: ${{ secrets.CACHE_ID }}-orix-sdk_
+          key: ${{ runner.os }}-orix-sdk
 
       - name: Prepare environment for project
         run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
 
       - name: Compile project
-        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
+        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 ./make.sh
 
       - name: List build directory content
         run: ls -lR build
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.job_vars.outputs.REPO_NAME }}
           path: |
@@ -157,7 +155,7 @@ jobs:
       # On pourrait faire l'extraction directement à la racine si VERSION est dans l'artifact
       - name: Download Artifact
         id: download
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ needs.build.outputs.repo_name }}
           path: artifact
@@ -170,4 +168,3 @@ jobs:
         run: |
            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha ; fi
            curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
-
