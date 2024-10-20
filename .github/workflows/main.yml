@@ -210,6 +210,7 @@ jobs:
 
       - name: Upload to oric
         run: |
+
           export BPM_PUBLISH_KEY = $hash
           if [ -f "bpm.tml" ]; then
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then bpm publish --official; else bpm publish --alpha; fi
