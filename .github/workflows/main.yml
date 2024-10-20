@@ -68,6 +68,20 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
+      - name: Prepare environment for oricutron
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get install -y xvfb libgtk-3-0 libgtk-3-dev libsdl1.2debian libsdl1.2-dev
+          git clone https://github.com/pete-gordon/oricutron.git
+          cd oricutron && make && pwd && cd .. && ls -l && echo ${GITHUB_WORKSPACE}
+          echo Timeout oricutron : $secret.TMOUT_ORICUTRON
+
+      - name:Get bpm
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        run: |
+          wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm
+          bpm -V
+
       - name: Compile orix-sdk
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         working-directory: orix-sdk
@@ -111,7 +125,24 @@ jobs:
         run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
 
       - name: Compile project
-        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 ./make.sh
+        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 bpm build
+
+      - name: Unit-test with oricutron
+        run: |
+          git clone https://github.com/orix-software/docker-unit-test.git
+          cd docker-unit-test && bash install.sh ${GITHUB_WORKSPACE} && cd ..
+          if [ -d "tests/build/" ] && [ "$(ls -A tests/build/" ]; then
+            cp tests/build/*  > ${GITHUB_WORKSPACE}/oricutron/sdcard/BIN
+            echo "#!/bin/submit\n" > ${GITHUB_WORKSPACE}/oricutron/sdcard/ETC/AUTOBOOT
+            cp tests/run.sub >> ${GITHUB_WORKSPACE}/oricutron/sdcard/ETC/AUTOBOOT
+            cd ${GITHUB_WORKSPACE}/oricutron
+            timeout --preserve-status 10 ./xvfb.sh || exit 0
+          fi
+
+      - name: Check unit-test
+        run: |
+          ls -l ${GITHUB_WORKSPACE}/oricutron/sdcard/
+          bash tests/unit-tests/verify.sh ${GITHUB_WORKSPACE}/oricutron/sdcard/
 
       - name: List build directory content
         run: ls -lR build
@@ -162,9 +193,10 @@ jobs:
 
       - name: Make archive
         working-directory: ${{steps.download.outputs.download-path}}
-        run: tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
+        run: bpm package
 
       - name: Upload to oric
         run: |
-           if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha ; fi
-           curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
+           ecport BPM_PUBLISH_KEY = $hash
+           if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; bpm publish --official ; else VERSION=alpha; bpm publish --alpha ; fi
+           #curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
