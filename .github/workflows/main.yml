@@ -76,12 +76,6 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
-      - name: Get bpm
-        if: steps.cache-sdk.outputs.cache-hit != 'true'
-        run: |
-          mkdir ~/bin/ && wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin/bpm
-          bpm -V
-
       - name: Prepare environment for oricutron
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
@@ -130,10 +124,15 @@ jobs:
           key: ${{ runner.os }}-orix-sdk
 
       - name: Prepare environment for project
-        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && cp bpm/src/bpm ~/bin && chmod 755 ~/bin/bpm && echo $PATH
+        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && cp bpm/src/bpm ~/bin && chmod 755 ~/bin/bpm && echo $PATH && export PATH=$PATH:~/bin/bpm && ls -l ~/bin/
 
       - name: Compile project
-        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 bpm build
+        run: |
+          if [ -f "bpm.tml" ]; then
+            CC65_HOME=${GITHUB_WORKSPACE}/../cc65 bpm build
+          else
+            CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
+          fi
 
       - name: Unit-test with oricutron
         run: |
@@ -210,7 +209,6 @@ jobs:
 
       - name: Upload to oric
         run: |
-
           export BPM_PUBLISH_KEY = $hash
           if [ -f "bpm.tml" ]; then
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then bpm publish --official; else bpm publish --alpha; fi
