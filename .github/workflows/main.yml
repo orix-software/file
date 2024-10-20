@@ -76,6 +76,12 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
+      - name: Get bpm
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        run: |
+          mkdir ~/bin/ && wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin/bpm && ls -l ~/bin/bpm 
+          bpm -V
+
       - name: Prepare environment for oricutron
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
@@ -124,7 +130,7 @@ jobs:
           key: ${{ runner.os }}-orix-sdk
 
       - name: Prepare environment for project
-        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && cp bpm/src/bpm ~/bin && chmod 755 ~/bin/bpm && echo $PATH && export PATH=$PATH:~/bin/bpm && ls -l ~/bin/
+        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && cp bpm/src/bpm ~/bin && chmod 755 ~/bin/bpm && echo $PATH
 
       - name: Compile project
         run: |
