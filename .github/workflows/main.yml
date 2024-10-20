@@ -76,7 +76,7 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
-      - name:Get bpm
+      - name: Get bpm
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
           wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm
