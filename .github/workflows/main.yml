@@ -81,6 +81,8 @@ jobs:
         run: |
           git clone  https://raw.githubusercontent.com/orix-software/bpm
           mkdir ~/bin
+          ls -l
+          ls -l ~/bin
           cp bpm/src/bpm ~/bin
           chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin && ls -l ~/bin/
 
