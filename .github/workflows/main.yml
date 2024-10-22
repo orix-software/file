@@ -75,11 +75,10 @@ jobs:
           git config --local core.sparseCheckout true
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
- 
+
       - name: Get bpm 2
         # if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
-          git clone  https://raw.githubusercontent.com/orix-software/bpm
           mkdir ~/bin
           ls -l
           ls -l ~/bin
