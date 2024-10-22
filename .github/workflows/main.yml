@@ -134,12 +134,12 @@ jobs:
 
       - name: Compile project
         run: |
-          
+
           if [ -f "bpm.tml" ]; then
           ls -l ~/bin
             echo Using bpm ...
-            python3 ../bpm/src/bpm plugins install orixsdk
-            CC65_HOME=${GITHUB_WORKSPACE}/../cc65 python3 ../bpm/src/bpm build
+            python3 ../bpm/src/bpm --force-update plugins install orixsdk
+            CC65_HOME=${GITHUB_WORKSPACE}/../cc65 python3 ../bpm/src/bpm --force-update  build
           else
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
           fi
@@ -212,7 +212,7 @@ jobs:
         working-directory: ${{steps.download.outputs.download-path}}
         run: |
           if [ -f "bpm.tml" ]; then
-            python3 ../bpm/src/bpm package
+            python3 ../bpm/src/bpm --force-update package
           else
             tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
           fi
@@ -221,8 +221,8 @@ jobs:
         run: |
           export BPM_PUBLISH_KEY = $hash
           if [ -f "bpm.tml" ]; then
-            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm publish --official; else python3 ../bpm/src/bpm publish --alpha; fi
+            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
           else
-            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; bpm publish --alpha ; fi
+            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; fi
             curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
           fi
