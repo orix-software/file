@@ -76,7 +76,7 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
-      - name: Settin bpm
+      - name: Setting bpm
         # if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
           mkdir ~/bin
@@ -134,6 +134,9 @@ jobs:
 
       - name: Prepare environment for project
         run: |
+          echo $PATH
+          ls -l ~bin/
+          ls -l
           bpm -V
           ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
 
