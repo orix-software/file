@@ -130,7 +130,7 @@ jobs:
           key: ${{ runner.os }}-orix-sdk
 
       - name: Prepare environment for project
-        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && cp bpm/src/bpm ~/bin && chmod 755 ~/bin/bpm && echo $PATH
+        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && ls -l && cp bpm/src/bpm ~/bin && chmod 755 ~/bin/bpm && echo $PATH
 
       - name: Compile project
         run: |
