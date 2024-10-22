@@ -76,15 +76,6 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
-      - name: Setting bpm
-        # if: steps.cache-sdk.outputs.cache-hit != 'true'
-        run: |
-          mkdir ~/bin
-          cd bpm && pip install -r requirements.txt && cd ..
-          cp bpm/src/bpm ~/bin
-          chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin && ls -l ~/bin/
-          bpm -V
-
       - name: Prepare environment for oricutron
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
@@ -135,6 +126,10 @@ jobs:
 
       - name: Prepare environment for project
         run: |
+          mkdir ~/bin
+          cd bpm && pip install -r requirements.txt && cd ..
+          cp bpm/src/bpm ~/bin
+          chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin && ls -l ~/bin/
           echo $PATH
           ls -l ~bin/
           ls -l
