@@ -130,6 +130,7 @@ jobs:
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
+             bpm/**/*
           key: ${{ runner.os }}-orix-sdk
 
       - name: Prepare environment for project
