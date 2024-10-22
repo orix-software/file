@@ -134,11 +134,13 @@ jobs:
           ls -l ~bin/
           ls -l
           bpm -V
-          ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
+          ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mv bpm ../
 
       - name: Compile project
         run: |
+          ls -l
           if [ -f "bpm.tml" ]; then
+            echo Using bpm ...
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65 bpm build
           else
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
