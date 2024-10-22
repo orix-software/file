@@ -79,7 +79,7 @@ jobs:
       - name: Get bpm
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
-          mkdir ~/bin/ && wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin/bpm && ls -l ~/bin/bpm
+          mkdir ~/bin/ && wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin && ls -l ~/bin/bpm
           bpm -V
 
       - name: Prepare environment for oricutron
@@ -136,6 +136,7 @@ jobs:
           echo $PATH
           PATH=$PATH:~/bin
           echo $PATH
+          cat ~/bin/bpm
           bpm -V
           ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && chmod 755 ~/bin/bpm && echo $PATH
 
