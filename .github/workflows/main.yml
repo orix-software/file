@@ -80,6 +80,7 @@ jobs:
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
           mkdir ~/bin/ && wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin && ls -l ~/bin/bpm
+          ls -l ~/bin
           bpm -V
 
       - name: Prepare environment for oricutron
