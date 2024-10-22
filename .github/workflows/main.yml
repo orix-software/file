@@ -76,16 +76,13 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
-      - name: Get bpm 2
+      - name: Settin bpm
         # if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
           mkdir ~/bin
-          ls -l
-          ls -l ~/bin
           cd bpm && pip install -r requirements.txt && cd ..
           cp bpm/src/bpm ~/bin
           chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin && ls -l ~/bin/
-
           bpm -V
 
       - name: Prepare environment for oricutron
@@ -137,14 +134,8 @@ jobs:
 
       - name: Prepare environment for project
         run: |
-          mkdir ~/bin -p
-          wget https://raw.githubusercontent.com/orix-software/bpm/refs/heads/main/src/bpm -o ~/bin/bpm && chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin/bpm && ls -l ~/bin/bpm
-          echo $PATH
-          PATH=$PATH:~/bin
-          echo $PATH
-          cat ~/bin/bpm
           bpm -V
-          ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mkdir ~/bin && chmod 755 ~/bin/bpm && echo $PATH
+          ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
 
       - name: Compile project
         run: |
