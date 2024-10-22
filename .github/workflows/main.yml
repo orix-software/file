@@ -82,6 +82,7 @@ jobs:
           mkdir ~/bin
           ls -l
           ls -l ~/bin
+          cd bpm && pip install -r requirements.txt && cd ..
           cp bpm/src/bpm ~/bin
           chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin && ls -l ~/bin/
 
