@@ -141,7 +141,7 @@ jobs:
           ls -l
           if [ -f "bpm.tml" ]; then
             echo Using bpm ...
-            CC65_HOME=${GITHUB_WORKSPACE}/../cc65 bpm build
+            CC65_HOME=${GITHUB_WORKSPACE}/../cc65 python3 ../bpm/src/bpm build
           else
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
           fi
