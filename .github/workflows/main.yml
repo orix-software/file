@@ -138,10 +138,14 @@ jobs:
         run: |
           if [ -f "bpm.tml" ]; then
           ls -l ~/bin
-            echo "../bpm/src/bpm" >> "$GITHUB_PATH"
+            echo "../bpm/src/bpm" >> $GITHUB_PATH
+            echo PATH
             echo $PATH
+            echo GITHUB PATH
             echo $GITHUB_PATH
-            echo "../cc65/" >> "$GITHUB_PATH"
+            echo "../cc65/" >> $GITHUB_PATH
+            echo ls
+            ls -l
             bpm -V
             echo Using bpm ...
             python3 ../bpm/src/bpm --force-update plugins install orixsdk
