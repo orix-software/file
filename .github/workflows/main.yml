@@ -212,6 +212,7 @@ jobs:
         working-directory: ${{steps.download.outputs.download-path}}
         run: |
           if [ -f "bpm.tml" ]; then
+          echo "../bpm/src/bpm" >> "$GITHUB_PATH"
             python3 ../bpm/src/bpm --force-update package
           else
             tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
@@ -220,6 +221,7 @@ jobs:
       - name: Upload to oric
         run: |
           export BPM_PUBLISH_KEY = $hash
+          bpm -V
           if [ -f "bpm.tml" ]; then
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
           else
