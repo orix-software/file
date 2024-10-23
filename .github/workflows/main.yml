@@ -38,7 +38,7 @@ jobs:
           path: cc65
 
       - name: Checkout bpm
-        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        #if: steps.cache-sdk.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: orix-software/bpm
