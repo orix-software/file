@@ -140,6 +140,7 @@ jobs:
           ls -l ~/bin
             echo "../bpm/src/bpm" >> $GITHUB_PATH
             export PATH=$PATH:../bpm/src/
+            chmod 755 ../bpm/src/bpm
             echo PATH
             echo $PATH
             echo GITHUB PATH
