@@ -27,6 +27,7 @@ jobs:
              md2hlp/**/*
              orix-software/**/*
              bpm/**/*
+             oricutron/**/*
           key: ${{ secrets.CACHE_ID }}-orix-sdk
 
       - name: Checkout cc65
@@ -37,7 +38,7 @@ jobs:
           path: cc65
 
       - name: Checkout bpm
-        #if: steps.cache-sdk.outputs.cache-hit != 'true'
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: orix-software/bpm
@@ -77,7 +78,7 @@ jobs:
           git checkout
 
       - name: Prepare environment for oricutron
-        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        #if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: |
           sudo apt-get install -y xvfb libgtk-3-0 libgtk-3-dev libsdl1.2debian libsdl1.2-dev
           git clone https://github.com/pete-gordon/oricutron.git
