@@ -139,7 +139,7 @@ jobs:
           if [ -f "bpm.tml" ]; then
           ls -l ~/bin
             echo "../bpm/src/bpm" >> $GITHUB_PATH
-            export PATH=$PATH:../bpm/src/
+            export PATH=$PATH:../bpm/src/:../cc65
             chmod 755 ../bpm/src/bpm
             echo PATH
             echo $PATH
