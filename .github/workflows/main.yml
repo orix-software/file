@@ -130,15 +130,16 @@ jobs:
         run: |
           mkdir ~/bin
           cd bpm && pip install -r requirements.txt && cd ..
-          cp bpm/src/bpm ~/bin
-          chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin
+          # cp bpm/src/bpm ~/bin
+          # chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin
           ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mv bpm ../
 
       - name: Compile project
         run: |
-
           if [ -f "bpm.tml" ]; then
           ls -l ~/bin
+            echo "../bpm/src/bpm" >> "$GITHUB_PATH"
+            bpm -V
             echo Using bpm ...
             python3 ../bpm/src/bpm --force-update plugins install orixsdk
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65 python3 ../bpm/src/bpm --force-update  build
@@ -214,7 +215,6 @@ jobs:
         working-directory: ${{steps.download.outputs.download-path}}
         run: |
           if [ -f "bpm.tml" ]; then
-          echo "../bpm/src/bpm" >> "$GITHUB_PATH"
             python3 ../bpm/src/bpm --force-update package
           else
             tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
