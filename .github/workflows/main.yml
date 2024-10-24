@@ -138,6 +138,9 @@ jobs:
         run: |
           if [ -f "bpm.tml" ]; then
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65
+            #/home/runner/work/file/file
+            echo ${GITHUB_WORKSPACE}
+            ls -l ${GITHUB_WORKSPACE}
             pwd
             echo "../bpm/src/bpm" >> $GITHUB_PATH
             export PATH=$PATH:../bpm/src/:/home/runner/work/file/cc65/bin
