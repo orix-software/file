@@ -138,14 +138,9 @@ jobs:
         run: |
           if [ -f "bpm.tml" ]; then
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65
-            #/home/runner/work/file/file
-            echo ${GITHUB_WORKSPACE}
-            ls -l ${GITHUB_WORKSPACE}
-            pwd
             echo "../bpm/src/bpm" >> $GITHUB_PATH
+            echo ${GITHUB_WORKSPACE}/../cc65/bin >> $GITHUB_PATH
             export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
-            #/home/runner/work/file/cc65/bin
-            #${GITHUB_WORKSPACE}/../cc65
             chmod 755 ../bpm/src/bpm
             echo "/home/runner/work/file/cc65/bin" >> $GITHUB_PATH
             bpm --disable-check-update -V
@@ -163,10 +158,12 @@ jobs:
           git clone https://github.com/orix-software/docker-unit-test.git
           cd docker-unit-test && bash install.sh ${GITHUB_WORKSPACE} && cd ..
           if [ -d "tests/build/" ] && [ "$(ls -A tests/build/" ]; then
+            echo "Tests found, let's start"
             cp tests/build/*  > ${GITHUB_WORKSPACE}/oricutron/sdcard/BIN
             echo "#!/bin/submit\n" > ${GITHUB_WORKSPACE}/oricutron/sdcard/ETC/AUTOBOOT
             cp tests/run.sub >> ${GITHUB_WORKSPACE}/oricutron/sdcard/ETC/AUTOBOOT
             cd ${GITHUB_WORKSPACE}/oricutron
+            echo "Start Oricutron"
             timeout --preserve-status 10 ./xvfb.sh || exit 0
           fi
 
