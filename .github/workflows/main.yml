@@ -144,7 +144,7 @@ jobs:
             pwd
             ls -l
             ls -l ../cc65
-            export PATH=$PATH:../bpm/src/:/home/runner/work/file/cc65
+            export PATH=$PATH:../bpm/src/:/home/runner/work/file/cc65/bin
             chmod 755 ../bpm/src/bpm
             echo PATH
             echo $PATH
