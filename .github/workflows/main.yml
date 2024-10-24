@@ -143,8 +143,8 @@ jobs:
             echo pwd
             pwd
             ls -l
-            ls -l ../
-            export PATH=$PATH:../bpm/src/:../cc65
+            ls -l ../cc65
+            export PATH=$PATH:../bpm/src/:/home/runner/work/file/cc65
             chmod 755 ../bpm/src/bpm
             echo PATH
             echo $PATH
