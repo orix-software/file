@@ -143,7 +143,9 @@ jobs:
             ls -l ${GITHUB_WORKSPACE}
             pwd
             echo "../bpm/src/bpm" >> $GITHUB_PATH
-            export PATH=$PATH:../bpm/src/:/home/runner/work/file/cc65/bin
+            export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
+            #/home/runner/work/file/cc65/bin
+            #${GITHUB_WORKSPACE}/../cc65
             chmod 755 ../bpm/src/bpm
             echo "/home/runner/work/file/cc65/bin" >> $GITHUB_PATH
             bpm --disable-check-update -V
