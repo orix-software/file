@@ -148,7 +148,7 @@ jobs:
             echo "../cc65/" >> $GITHUB_PATH
             echo ls
             ls -l
-            bpm -V
+            bpm --disable-check-update -V
             bpm --force-update
             bpm -V
             echo Using bpm ...
