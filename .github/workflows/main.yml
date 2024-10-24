@@ -139,6 +139,8 @@ jobs:
           if [ -f "bpm.tml" ]; then
             ls -l ~/bin
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65
+            echo CC65_HOME
+            echo $CC65_HOME
             echo "../bpm/src/bpm" >> $GITHUB_PATH
             echo pwd
             pwd
@@ -150,7 +152,7 @@ jobs:
             echo $PATH
             echo GITHUB PATH
             echo $GITHUB_PATH
-            echo "../cc65/" >> $GITHUB_PATH
+            echo "/home/runner/work/file/cc65/bin" >> $GITHUB_PATH
             echo ls
             ls -l
             bpm --disable-check-update -V
