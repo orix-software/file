@@ -137,7 +137,8 @@ jobs:
       - name: Compile project
         run: |
           if [ -f "bpm.tml" ]; then
-          ls -l ~/bin
+            ls -l ~/bin
+            CC65_HOME=${GITHUB_WORKSPACE}/../cc65
             echo "../bpm/src/bpm" >> $GITHUB_PATH
             echo pwd
             pwd
