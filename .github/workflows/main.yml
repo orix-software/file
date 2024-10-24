@@ -139,6 +139,7 @@ jobs:
           if [ -f "bpm.tml" ]; then
             ls -l ${GITHUB_WORKSPACE}
             ls -l ${GITHUB_WORKSPACE}/oricutron
+            echo "Workspace : ${GITHUB_WORKSPACE}"
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65
             echo "../bpm/src/bpm" >> $GITHUB_PATH
             echo ${GITHUB_WORKSPACE}/../cc65/bin >> $GITHUB_PATH
@@ -156,6 +157,7 @@ jobs:
 
       - name: Unit-test with oricutron
         run: |
+          echo "Workspace : ${GITHUB_WORKSPACE}"
           git clone https://github.com/orix-software/docker-unit-test.git
           cd docker-unit-test && bash install.sh ${GITHUB_WORKSPACE} && cd ..
           if [ -d "tests/build/" ] && [ "$(ls -A tests/build/" ]; then
