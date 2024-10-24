@@ -149,7 +149,7 @@ jobs:
             echo ls
             ls -l
             bpm --disable-check-update -V
-            bpm --force-update
+            bpm --force-update -V
             bpm -V
             echo Using bpm ...
             python3 ../bpm/src/bpm --force-update plugins install orixsdk
