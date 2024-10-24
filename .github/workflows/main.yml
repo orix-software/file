@@ -137,18 +137,18 @@ jobs:
       - name: Compile project
         run: |
           if [ -f "bpm.tml" ]; then
-            ls -l ~/bin
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65
+
             echo "../bpm/src/bpm" >> $GITHUB_PATH
-            export PATH=$PATH:../bpm/src/:/home/runner/work/..//cc65/bin
+            export PATH=$PATH:../bpm/src/:/home/runner/work/file/cc65/bin
             chmod 755 ../bpm/src/bpm
-            echo "/home/runner/work/..//cc65/bin" >> $GITHUB_PATH
+            echo "/home/runner/work/file/cc65/bin" >> $GITHUB_PATH
             bpm --disable-check-update -V
             bpm --force-update -V
             bpm -V
             echo Using bpm ...
-            python3 ../bpm/src/bpm --force-update plugins install orixsdk
-            bpm --force-update  build
+            bpm --force-update plugins install orixsdk
+            bpm --force-update build
           else
             CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
           fi
