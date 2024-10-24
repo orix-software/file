@@ -1,10 +1,10 @@
 name: build
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push event only for all branches
   push:
-    branches: [ main, master, develop ]
+  #  branches: [ main, master ]
   #pull_request:
   #  branches: [ main, master ]
 
@@ -19,32 +19,41 @@ jobs:
     steps:
       - name: Cache sdk
         id: cache-sdk
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
              cc65/**/*
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
-          key: ${{ secrets.CACHE_ID }}-orix-sdk_
+             bpm/**/*
+             oricutron/**/*
+          key: ${{ secrets.CACHE_ID }}-orix-sdk
 
       - name: Checkout cc65
         if: steps.cache-sdk.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: cc65/cc65
           path: cc65
 
+      - name: Checkout bpm
+        #if: steps.cache-sdk.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: orix-software/bpm
+          path: bpm
+
       - name: Checkout orix-sdk
         if: steps.cache-sdk.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: assinie/orix-sdk
           path: orix-sdk
 
       - name: Checkout md2hlp
         if: steps.cache-sdk.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: assinie/md2hlp
           path: md2hlp
@@ -68,6 +77,14 @@ jobs:
           echo "src/include" >> .git/info/sparse-checkout
           git checkout
 
+      - name: Prepare environment for oricutron
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get install -y xvfb libgtk-3-0 libgtk-3-dev libsdl1.2debian libsdl1.2-dev
+          git clone https://github.com/pete-gordon/oricutron.git
+          cd oricutron && make && pwd && cd .. && ls -l && echo ${GITHUB_WORKSPACE}
+          echo Timeout oricutron : ${secret}.TMOUT_ORICUTRON
+
       - name: Compile orix-sdk
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         working-directory: orix-sdk
@@ -89,37 +106,83 @@ jobs:
       repo_name: ${{ steps.job_vars.outputs.REPO_NAME }}
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      - uses: actions/checkout@v3
 
       - name: Set job variables
         id: job_vars
         run: |
-          echo "::set-output name=VERSION::$(cat VERSION)"
-          echo "::set-output name=REPO_NAME::${GITHUB_REPOSITORY##*/}"
+          echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
+          echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_OUTPUT
 
       - name: Install sdk
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
              cc65/**/*
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
-          key: ${{ secrets.CACHE_ID }}-orix-sdk_
+             bpm/**/*
+             oricutron/**/*
+          key: ${{ secrets.CACHE_ID }}-orix-sdk
 
       - name: Prepare environment for project
-        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
+        run: |
+          mkdir ~/bin
+          cd bpm && pip install -r requirements.txt && cd ..
+          # cp bpm/src/bpm ~/bin
+          # chmod 755 ~/bin/bpm && export PATH=$PATH:~/bin
+          ls -l && ls -l .. && ls -l ~/bin/ && mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mv bpm ../
 
       - name: Compile project
-        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
+        run: |
+          if [ -f "bpm.tml" ]; then
+            ls -l ${GITHUB_WORKSPACE}
+            ls -l ${GITHUB_WORKSPACE}/oricutron
+            echo "Workspace : ${GITHUB_WORKSPACE}"
+            CC65_HOME=${GITHUB_WORKSPACE}/../cc65
+            echo "../bpm/src/bpm" >> $GITHUB_PATH
+            echo ${GITHUB_WORKSPACE}/../cc65/bin >> $GITHUB_PATH
+            export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
+            chmod 755 ../bpm/src/bpm
+            echo "/home/runner/work/file/cc65/bin" >> $GITHUB_PATH
+            echo "Bpm version :"
+            bpm  --force-update  -V
+            echo Using bpm ...
+            bpm --force-update plugins install orixsdk
+            bpm --force-update build
+          else
+            CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
+          fi
+
+      - name: Unit-test with oricutron
+        run: |
+          echo "Workspace : ${GITHUB_WORKSPACE}"
+          ls -l ${GITHUB_WORKSPACE}
+          ls -l ${GITHUB_WORKSPACE}/oricutron
+          ls -l ${GITHUB_WORKSPACE}/oricutron/roms
+          git clone https://github.com/orix-software/docker-unit-test.git
+          cd docker-unit-test && bash install.sh ${GITHUB_WORKSPACE} && cd ..
+          if [ -d "tests/build/" ] && [ "$(ls -A tests/build/" ]; then
+            echo "Tests found, let's start"
+            cp tests/build/*  > ${GITHUB_WORKSPACE}/oricutron/sdcard/BIN
+            echo "#!/bin/submit\n" > ${GITHUB_WORKSPACE}/oricutron/sdcard/ETC/AUTOBOOT
+            cp tests/run.sub >> ${GITHUB_WORKSPACE}/oricutron/sdcard/ETC/AUTOBOOT
+            cd ${GITHUB_WORKSPACE}/oricutron
+            echo "Start Oricutron"
+            timeout --preserve-status 10 ./xvfb.sh || exit 0
+          fi
+
+      - name: Check unit-test
+        run: |
+          ls -l ${GITHUB_WORKSPACE}/oricutron/sdcard/
+          bash tests/unit-tests/verify.sh ${GITHUB_WORKSPACE}/oricutron/sdcard/
 
       - name: List build directory content
         run: ls -lR build
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.job_vars.outputs.REPO_NAME }}
           path: |
@@ -157,17 +220,27 @@ jobs:
       # On pourrait faire l'extraction directement à la racine si VERSION est dans l'artifact
       - name: Download Artifact
         id: download
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ needs.build.outputs.repo_name }}
           path: artifact
 
       - name: Make archive
         working-directory: ${{steps.download.outputs.download-path}}
-        run: tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
+        run: |
+          if [ -f "bpm.tml" ]; then
+            python3 ../bpm/src/bpm --force-update package
+          else
+            tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
+          fi
 
       - name: Upload to oric
         run: |
-           if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha ; fi
-           curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
-
+          export BPM_PUBLISH_KEY = $hash
+          bpm -V
+          if [ -f "bpm.tml" ]; then
+            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
+          else
+            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; fi
+            curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
+          fi
