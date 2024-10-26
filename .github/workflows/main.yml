@@ -232,15 +232,18 @@ jobs:
       - name: Make archive
         working-directory: ${{steps.download.outputs.download-path}}
         run: |
+          ls -l
           if [ -f "bpm.tml" ]; then
+            echo "Use bpm for archive"
             python3 ../bpm/src/bpm --force-update package
           else
+            echo "Use tar for archive"
             tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
           fi
 
       - name: Upload to oric
         run: |
-
+          ls -l
           if [ -f "bpm.tml" ]; then
             echo "Use bpm for upload"
             BPM_PUBLISH_KEY = $hash
