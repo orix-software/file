@@ -160,7 +160,7 @@ jobs:
         run: |
           echo "Workspace : ${GITHUB_WORKSPACE}"
           echo Checking if there is unit tests
-          if [ -d "tests/build/" ] && [ "$(ls -A tests/build/" ]; then
+          if [ -d "tests/build/" ] && [ "$(ls -A tests/build/)" ]; then
             echo "########################################################"
             echo "#   Unit tests found : Starting Oricutron with tests   #"
             echo "########################################################"
