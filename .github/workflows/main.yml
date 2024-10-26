@@ -240,9 +240,10 @@ jobs:
 
       - name: Upload to oric
         run: |
-          export BPM_PUBLISH_KEY = $hash
-          bpm -V
+
           if [ -f "bpm.tml" ]; then
+            BPM_PUBLISH_KEY = $hash
+            bpm -V
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
           else
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; fi
