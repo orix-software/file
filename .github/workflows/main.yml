@@ -159,7 +159,7 @@ jobs:
       - name: Unit-test with oricutron
         run: |
           echo "Workspace : ${GITHUB_WORKSPACE}"
-          ls  ls -A tests/build/
+          ls -A tests/build/
           if [ -d "tests/build/" ] && [ "$(ls -A tests/build/" ]; then
             git clone https://github.com/orix-software/docker-unit-test.git
             cd docker-unit-test && bash install.sh ${GITHUB_WORKSPACE} && cd ..
