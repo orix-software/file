@@ -242,6 +242,7 @@ jobs:
         run: |
 
           if [ -f "bpm.tml" ]; then
+            echo "Use bpm for upload"
             BPM_PUBLISH_KEY = $hash
             bpm -V
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
