@@ -177,7 +177,7 @@ jobs:
 
       - name: Check unit-test
         run: |
-          if [ -d "tests/build/" ] && [ "$(ls -A tests/build/" ]; then
+          if [ -d "tests/build/" ] && [ "$(ls -A tests/build/)" ]; then
             ls -l ${GITHUB_WORKSPACE}/oricutron/sdcard/
             bash tests/unit-tests/verify.sh ${GITHUB_WORKSPACE}/oricutron/sdcard/
           fi
