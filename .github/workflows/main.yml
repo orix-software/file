@@ -196,6 +196,12 @@ jobs:
       - name: Post compilation
         run: mv ../cc65 . && mv ../orix-software . && mv ../orix-sdk . && mv ../md2hlp .
 
+      - name: Upload if bpm
+        run: |
+          if [ -f "bpm.tml" ]; then
+             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
+          fi
+
   upload:
     needs: build
     runs-on: ubuntu-24.04
@@ -232,27 +238,12 @@ jobs:
       - name: Make archive
         working-directory: ${{steps.download.outputs.download-path}}
         run: |
-          ls -l
-          find . -name "bpm.tml" -exec cp {} . \;
-          if [ -f "etc/bpm/" ]; then
-            echo "Use bpm for archive"
-            python3 ../bpm/src/bpm --force-update package
-          else
-            echo "Use tar for archive"
-            tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
-          fi
+          echo "Use tar for archive"
+          tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
+
 
       - name: Upload to oric
         run: |
-          ls -l
-          find . -name "bpm.tml" -exec cp {} . \;
-          if [ -f "etc/bpm/" ]; then
-            cp etc/bpm/* . -adpR
-            echo "Use bpm for upload"
-            BPM_PUBLISH_KEY = $hash
-            bpm -V
-            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
-          else
-            if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; fi
-            curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
-          fi
+          if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; fi
+          curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
+
