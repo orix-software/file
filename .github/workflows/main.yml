@@ -199,7 +199,7 @@ jobs:
       - name: Upload if bpm
         run: |
           if [ -f "bpm.tml" ]; then
-             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then python3 ../bpm/src/bpm --force-update publish --official; else python3 --force-update ../bpm/src/bpm publish --alpha; fi
+             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then bpm --force-update -V;--force-update publish --official; else bpm publish --alpha; fi
           fi
 
   upload:
