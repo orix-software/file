@@ -202,11 +202,13 @@ jobs:
             export BPM_PUBLISH_KEY=$hash
             export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then bpm --force-update -V;--force-update publish --official; else bpm publish --alpha; fi
-          fi
+            echo "BPM_FOUND=True" >> $GITHUB_ENV
+            fi
 
   upload:
     needs: build
     runs-on: ubuntu-24.04
+    if: env.BPM_FOUND != True
     defaults:
       run:
         shell: bash
@@ -243,9 +245,9 @@ jobs:
           echo "Use tar for archive"
           tar -zcvf $GITHUB_WORKSPACE/$ARCHIVE_NAME *
 
-
       - name: Upload to oric
         run: |
+        if BPM_FOUND=True"
           if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; fi
           curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
 
