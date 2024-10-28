@@ -203,7 +203,7 @@ jobs:
             export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then bpm --force-update -V;--force-update publish --official; else bpm publish --alpha; fi
             echo "BPM_FOUND='True'" >> $GITHUB_ENV
-            fi
+          fi
 
   upload:
     needs: build
