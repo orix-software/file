@@ -104,6 +104,7 @@ jobs:
     outputs:
       version: ${{ steps.job_vars.outputs.VERSION }}
       repo_name: ${{ steps.job_vars.outputs.REPO_NAME }}
+      bpm_found: ${{ steps.bpm_upload.outputs.BPM_FOUND }}
 
     steps:
       - uses: actions/checkout@v3
@@ -197,12 +198,13 @@ jobs:
         run: mv ../cc65 . && mv ../orix-software . && mv ../orix-sdk . && mv ../md2hlp .
 
       - name: Upload if bpm
+        id: bpm_upload
         run: |
           if [ -f "bpm.tml" ]; then
             export BPM_PUBLISH_KEY=$hash
             export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
             if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then bpm --force-update -V;--force-update publish --official; else bpm publish --alpha; fi
-            echo "BPM_FOUND='True'" >> $GITHUB_ENV
+            echo "BPM_FOUND='True'" >> $GITHUB_OUTPUT
           fi
 
   upload:
@@ -215,6 +217,7 @@ jobs:
       hash: ${{ secrets.HASH }}
       version: ${{ needs.build.outputs.version }}
       repo_name: ${{ needs.build.outputs.repo_name }}
+      BPM_FOUND: ${{ needs.build.outputs.bpm_found }}
 
     steps:
       - name: Get branch name
@@ -246,7 +249,7 @@ jobs:
 
       - name: Upload to oric
         run: |
-          echo BPM  $BPM_FOUND # OK
+          echo BPM $BPM_FOUND
           if [ "$BRANCH_NAME" = "master" -o "$BRANCH_NAME" = "main" ]; then VERSION="$version"; else VERSION=alpha; fi
           curl -X POST --data-binary "@${ARCHIVE_NAME}" "https://cdn.oric.org/publish.php?hash=$hash&path=/home/oricoujr/www/ftp/orix/dists/$VERSION/tgz/6502/${ARCHIVE_NAME}"
 
