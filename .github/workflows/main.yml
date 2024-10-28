@@ -233,7 +233,7 @@ jobs:
         working-directory: ${{steps.download.outputs.download-path}}
         run: |
           ls -l
-          if [ -f "bpm.tml" ]; then
+          if [ -f "etc/bpm/" ]; then
             echo "Use bpm for archive"
             python3 ../bpm/src/bpm --force-update package
           else
@@ -244,7 +244,9 @@ jobs:
       - name: Upload to oric
         run: |
           ls -l
+          find / -name "bpm.tml" -exec cp {} . \;
           if [ -f "etc/bpm/" ]; then
+            cp etc/bpm/* . -adpR
             echo "Use bpm for upload"
             BPM_PUBLISH_KEY = $hash
             bpm -V
